@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+// The greeting service definition.
+service SDCS {
+  // Sends a greeting
+  rpc RPCGet(Key) returns (Value) {}
+
+  rpc RPCPost(Pair) returns (Flag) {}
+
+  rpc RPCDelete(Key) returns (Flag) {}
+
+  rpc RPCAddNextSever(Flag) returns (Flag) {}
+}
+
+// The request message containing the user's name.
+message Key {
+  optional string key = 1;
+}
+
+// The response message containing the greetings
+message Value {
+  optional string value = 1;
+}
+
+message Flag {
+  int32 flag = 1;
+}
+
+message Pair {
+  string key = 1;
+  string value = 2;
+}
