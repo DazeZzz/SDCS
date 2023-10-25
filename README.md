@@ -4,7 +4,7 @@ This is a simple distributed cache system for UESTC distributed system course ho
 
 I finished it in my spare time in one week so it's very simple and just supports some very simple functions. It supports simple key-value access, you can run it on distributed system with several server.
 
-I used `http` and `rpc` protocol to implement it, and found two libraries in github, they are **cpp-httplib** and **gRPC**. Their address is here:
+I used `http` and `rpc` protocol to implement it, and found two libraries in github, they are **cpp-httplib** and **gRPC**. Their address is here:\
 <https://github.com/yhirose/cpp-httplib>\
 <https://github.com/grpc/grpc>
 
