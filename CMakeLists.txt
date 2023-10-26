@@ -17,13 +17,13 @@ include_directories("${PROJECT_SOURCE_DIR}/src/include" "${PROJECT_BINARY_DIR}")
 
 add_subdirectory(src)
 
-set(RELEASE_DIR "release/${CMAKE_PROJECT_VERSION}")
+set(RELEASE_DIR "${PROJECT_SOURCE_DIR}/release/${CMAKE_PROJECT_VERSION}")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   message(STATUS "The build type is release")
   set_target_properties(SDCS
   PROPERTIES 
-  RUNTIME_OUTPUT_DIRECTORY ${RELEASE_DIR})
+  RUNTIME_OUTPUT_DIRECTORY "${RELEASE_DIR}")
 endif()
 
 install(TARGETS SDCS DESTINATION bin)
