@@ -23,7 +23,7 @@ public:
 
   int32_t RPCDelete(const std::string &key);
 
-  std::string RPCAddNextSever();
+  std::string RPCAddNextServer();
 
 private:
   std::unique_ptr<SDCS::Stub> stub_;

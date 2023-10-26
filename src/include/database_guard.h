@@ -19,13 +19,13 @@ public:
 
   void Print(const std::string &key);
 
-  void AddNextSever();
+  void AddNextServer();
 
-  uint64_t GetNextSever();
+  uint64_t GetNextServer();
 
 private:
   std::unordered_map<std::string, std::string> database_;
-  uint64_t next_sever_ = 0;
+  uint64_t next_server_ = 0;
   std::shared_mutex map_latch_;
-  std::shared_mutex next_sever_latch_;
+  std::shared_mutex next_server_latch_;
 };

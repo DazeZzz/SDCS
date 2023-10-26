@@ -8,12 +8,12 @@
 
 #include "absl/flags/flag.h"
 #include "client_rpc.h"
-#include "sever_rpc.h"
+#include "server_rpc.h"
 
 static constexpr int NOT_FOUND = 404;
-static constexpr uint NUM_OF_SEVER = 3;
+static constexpr uint NUM_OF_SERVER = 3;
 static const std::string PORT_FOR_RPC = ":3000";
-static const std::unordered_map<int, std::string> IP_OF_SEVERS = {
+static const std::unordered_map<int, std::string> IP_OF_SERVERS = {
     {0, "172.18.0.2"}, {1, "172.18.0.3"}, {2, "172.18.0.4"}};
 
 ABSL_FLAG(uint16_t, port, 3000, "Server port for the service");
@@ -35,7 +35,7 @@ int main() {
       std::cout << "HTTP GET from local ip" << std::endl;
       return;
     }
-    for (const auto &ip : IP_OF_SEVERS) {
+    for (const auto &ip : IP_OF_SERVERS) {
       if (ip.second == local_ip) {
         continue;
       }
@@ -61,7 +61,7 @@ int main() {
       return;
     }
 
-    for (const auto &ip : IP_OF_SEVERS) {
+    for (const auto &ip : IP_OF_SERVERS) {
       if (ip.second == local_ip) {
         continue;
       }
@@ -76,8 +76,8 @@ int main() {
       }
     }
 
-    uint64_t next_sever = database->GetNextSever() % NUM_OF_SEVER;
-    std::string ip_to_post = IP_OF_SEVERS.find(next_sever)->second;
+    uint64_t next_server = database->GetNextServer() % NUM_OF_SERVER;
+    std::string ip_to_post = IP_OF_SERVERS.find(next_server)->second;
     if (ip_to_post == local_ip) {
       database->Add(key, req.body);
       std::cout << "HTTP POST to local ip" << std::endl;
@@ -88,14 +88,14 @@ int main() {
       std::cout << "HTTP POST is forwarded to the server: " << ip_to_post
                 << std::endl;
     }
-    database->AddNextSever();
+    database->AddNextServer();
   });
 
   svr.Delete(R"((/.*))", [&](const httplib::Request &req,
                              httplib::Response &res) {
     int delete_num = database->Remove(req.path);
     if (delete_num == 0) {
-      for (const auto &ip : IP_OF_SEVERS) {
+      for (const auto &ip : IP_OF_SERVERS) {
         if (ip.second == local_ip) {
           continue;
         }

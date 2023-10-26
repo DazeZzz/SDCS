@@ -1,4 +1,4 @@
-#include "sever_rpc.h"
+#include "server_rpc.h"
 #include <grpcpp/ext/proto_server_reflection_plugin.h>
 #include <iostream>
 #include <optional>
@@ -6,7 +6,7 @@
 
 Status SDCSServiceImpl::RPCGet(ServerContext *context, const Key *request,
                                Value *reply) {
-  std::cout << "RPC GET from other sever" << std::endl;
+  std::cout << "RPC GET from other server" << std::endl;
   std::optional value = database_->Find(request->key());
   if (value) {
     reply->set_value(*value);
@@ -16,23 +16,23 @@ Status SDCSServiceImpl::RPCGet(ServerContext *context, const Key *request,
 
 Status SDCSServiceImpl::RPCPost(ServerContext *context, const Pair *request,
                                 Flag *reply) {
-  std::cout << "RPC POST from other sever" << std::endl;
+  std::cout << "RPC POST from other server" << std::endl;
   database_->Add(request->key(), request->value());
   return Status::OK;
 }
 
 Status SDCSServiceImpl::RPCDelete(ServerContext *context, const Key *request,
                                   Flag *reply) {
-  std::cout << "RPC DELETE from other sever" << std::endl;
+  std::cout << "RPC DELETE from other server" << std::endl;
   int32_t num = database_->Remove(request->key());
   reply->set_flag(num);
   return Status::OK;
 }
 
-Status SDCSServiceImpl::RPCAddNextSever(ServerContext *context,
+Status SDCSServiceImpl::RPCAddNextServer(ServerContext *context,
                                         const Flag *request, Flag *reply) {
-  std::cout << "RPC AddNextSever from other sever" << std::endl;
-  database_->AddNextSever();
+  std::cout << "RPC AddNextServer from other server" << std::endl;
+  database_->AddNextServer();
   return Status::OK;
 }
 

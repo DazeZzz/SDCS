@@ -30,7 +30,7 @@ public:
   Status RPCDelete(ServerContext *context, const Key *request,
                    Flag *reply) override;
 
-  Status RPCAddNextSever(ServerContext *context, const Flag *request,
+  Status RPCAddNextServer(ServerContext *context, const Flag *request,
                          Flag *reply) override;
 
 private:

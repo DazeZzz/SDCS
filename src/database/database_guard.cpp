@@ -27,12 +27,12 @@ void DatabaseGuard::Print(const std::string &key) {
   std::cout << database_.at(key) << std::endl;
 }
 
-void DatabaseGuard::AddNextSever() {
-  std::scoped_lock lk{next_sever_latch_};
-  next_sever_++;
+void DatabaseGuard::AddNextServer() {
+  std::scoped_lock lk{next_server_latch_};
+  next_server_++;
 }
 
-uint64_t DatabaseGuard::GetNextSever() {
-  std::shared_lock lk{next_sever_latch_};
-  return next_sever_;
+uint64_t DatabaseGuard::GetNextServer() {
+  std::shared_lock lk{next_server_latch_};
+  return next_server_;
 }

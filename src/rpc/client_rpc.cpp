@@ -47,11 +47,11 @@ int32_t RPCClient::RPCDelete(const std::string &key) {
   return -1;
 }
 
-std::string RPCClient::RPCAddNextSever() {
+std::string RPCClient::RPCAddNextServer() {
   Flag request;
   Flag reply;
   ClientContext context;
-  Status status = stub_->RPCAddNextSever(&context, request, &reply);
+  Status status = stub_->RPCAddNextServer(&context, request, &reply);
   if (status.ok()) {
     return "RPC successed";
   }
