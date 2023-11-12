@@ -32,7 +32,7 @@ int main() {
     std::optional value = database->Find(req.path);
     if (value) {
       res.set_content(*value, "text/plain");
-      std::cout << "HTTP GET from local ip" << std::endl;
+      // std::cout << "HTTP GET from local ip" << std::endl;
       return;
     }
     for (const auto &ip : IP_OF_SERVERS) {
@@ -44,8 +44,8 @@ int main() {
       value = cli.RPCGet(req.path);
       if (value) {
         res.set_content(*value, "text/plain");
-        std::cout << "HTTP GET is forwarded to the server: " << ip.second
-                  << std::endl;
+        // std::cout << "HTTP GET is forwarded to the server: " << ip.second
+        //           << std::endl;
         return;
       }
     }
@@ -53,11 +53,13 @@ int main() {
   });
 
   svr.Post("/", [&](const httplib::Request &req, httplib::Response &res) {
-    std::string key = "/" + req.body.substr(2, req.body.find(':') - 3);
+    std::string::size_type first_pos = req.body.find('"') + 1;
+    std::string key = "/" + req.body.substr(first_pos, req.body.find('"', first_pos) - first_pos);
+    // std::cout << "key: " << key << std::endl;
 
     if (database->Find(key)) {
       database->Add(key, req.body);
-      std::cout << "HTTP POST to modify existing data locally" << std::endl;
+      std::cout << local_ip << " POST-m: " << req.body << std::endl;
       return;
     }
 
@@ -69,9 +71,7 @@ int main() {
                                         grpc::InsecureChannelCredentials()));
       if (cli.RPCGet(key)) {
         cli.RPCPost(key, req.body);
-        std::cout << "HTTP POST to modify existing data is forwarded to the "
-                     "server: "
-                  << ip.second << std::endl;
+        std::cout << ip.second << " POST-m: " << req.body << std::endl;
         return;
       }
     }
@@ -80,13 +80,12 @@ int main() {
     std::string ip_to_post = IP_OF_SERVERS.find(next_server)->second;
     if (ip_to_post == local_ip) {
       database->Add(key, req.body);
-      std::cout << "HTTP POST to local ip" << std::endl;
+      std::cout << local_ip << " POST: " << req.body << std::endl;
     } else {
       RPCClient cli(grpc::CreateChannel(ip_to_post + PORT_FOR_RPC,
                                         grpc::InsecureChannelCredentials()));
       cli.RPCPost(key, req.body);
-      std::cout << "HTTP POST is forwarded to the server: " << ip_to_post
-                << std::endl;
+      std::cout << ip_to_post << " POST: " << req.body << std::endl;
     }
     database->AddNextServer();
   });
@@ -103,16 +102,15 @@ int main() {
                                           grpc::InsecureChannelCredentials()));
         delete_num = cli.RPCDelete(req.path);
         if (delete_num == 1) {
-          std::cout << "HTTP POST is forwarded to the server: " << ip.second
-                    << std::endl;
+          std::cout << ip.second << " DELETE: " << req.path << std::endl;
           break;
         }
       }
     } else {
-      std::cout << "HTTP DELETE from local ip" << std::endl;
+      std::cout << local_ip << " DELETE: " << req.path << std::endl;
     }
     if (delete_num == 0) {
-      std::cout << "HTTP DELETE nothing" << std::endl;
+      std::cout << "DELETE nothing: " << req.path << std::endl;
     }
     res.set_content(std::to_string(delete_num), "text/plain");
   });
