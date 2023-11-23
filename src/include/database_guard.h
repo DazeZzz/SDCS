@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <bits/stdint-intn.h>
 #include <bits/stdint-uintn.h>
 #include <iostream>
@@ -25,7 +26,6 @@ public:
 
 private:
   std::unordered_map<std::string, std::string> database_;
-  uint64_t next_server_ = 0;
+  std::atomic_uint64_t next_server_ = 0;
   std::shared_mutex map_latch_;
-  std::shared_mutex next_server_latch_;
 };

@@ -32,7 +32,6 @@ int main() {
     std::optional value = database->Find(req.path);
     if (value) {
       res.set_content(*value, "text/plain");
-      // std::cout << "HTTP GET from local ip" << std::endl;
       return;
     }
     for (const auto &ip : IP_OF_SERVERS) {
@@ -44,8 +43,6 @@ int main() {
       value = cli.RPCGet(req.path);
       if (value) {
         res.set_content(*value, "text/plain");
-        // std::cout << "HTTP GET is forwarded to the server: " << ip.second
-        //           << std::endl;
         return;
       }
     }
@@ -54,8 +51,9 @@ int main() {
 
   svr.Post("/", [&](const httplib::Request &req, httplib::Response &res) {
     std::string::size_type first_pos = req.body.find('"') + 1;
-    std::string key = "/" + req.body.substr(first_pos, req.body.find('"', first_pos) - first_pos);
-    // std::cout << "key: " << key << std::endl;
+    std::string key =
+        "/" +
+        req.body.substr(first_pos, req.body.find('"', first_pos) - first_pos);
 
     if (database->Find(key)) {
       database->Add(key, req.body);
@@ -114,8 +112,6 @@ int main() {
     }
     res.set_content(std::to_string(delete_num), "text/plain");
   });
-
-  // svr.Get("/stop", [&](const Request &, Response &) { svr.stop(); });
 
   svr.listen("0.0.0.0", 2000);
 }
